@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="de">
+
+    <title th:text=#{register.title}></title>
+    <!--/*/ <th:block th:include="fragments/header :: meta"></th:block> /*/-->
+    
+</head>
+	<body>
+		
+		<div class="container">
+		
+			<div class="jumbotron">
+				<h1 th:text="#{register.title}"></h1>
+				
+				<div class="alert alert-danger" th:if="${param.error}" role="alert">
+            		<h4 th:text="#{register.failed}">Invalid username and password.</h4>
+            	</div>
+        
+			</div><!-- closes jumbotron -->
+			
+			<div class="container-fluid">    
+	  			<div class="row content" >
+					
+					 
+					<form th:action="@{/register}" method="post" role="form">
+							 <div class="col-sm-6">
+									
+									  <div class="form-group">
+									    <label for="firstName" th:text="#{register.firstName}">First name</label>
+									    <input th:value="${user.firstName}" name="firstName" type="text" class="form-control" id="firstName" th:attr="placeholder=#{register.firstName}">
+									  </div>
+									  
+									  <div class="form-group">
+									    <label for="lastName" th:text="#{register.lastName}">Last name</label>
+									    <input th:value="${user.lastName}" name="lastName" type="text" class="form-control" id="lastName" th:attr="placeholder=#{register.lastName}">
+									  </div>
+									  	
+									  <div class="form-group">
+									    <label for="userName" th:text="#{register.userName}">User name</label>
+									    <input th:value="${user.userName}" name="userName" type="text" class="form-control" id="userName" th:attr="placeholder=#{register.userName}">
+									  </div>
+								
+									  <div class="form-group">
+									    <label for="email" th:text="#{register.email}">Email address</label>
+									    <input th:value="${user.email}" name="email" type="email" class="form-control" id="email" th:attr="placeholder=#{register.email}">
+									  </div>
+									  
+									  <div class="form-group">
+									    <label for="password1" th:text="#{register.password}">Password</label>
+									    <input th:value="${user.password}" name="password" type="password" class="form-control" id="password1" th:attr="placeholder=#{register.password}">
+									  </div>
+									  
+									  <div class="form-group">
+									    <label for="password2" th:text="#{register.password.repeat}">Password</label>
+									    <input type="password" class="form-control" id="password2" th:attr="placeholder=#{register.password.repeat}">
+									  </div>
+									  
+						  		</div><!-- closes col-sm6 -->
+
+							  	<div class="col-sm-6">
+							  		
+							  		
+									  <div class="form-group">
+									    <label for="street" th:text="#{register.street}">Street</label>
+									    <input th:value="${address.street}" name="street" type="text" class="form-control" id="street" th:attr="placeholder=#{register.street}">
+									  </div>
+									  
+									  <div class="form-group">
+									    <label for="houseNumber" th:text="#{register.houseNumber}">Street</label>
+									    <input th:value="${address.houseNumber}" name="houseNumber" type="text" class="form-control" id="houseNumber" th:attr="placeholder=#{register.houseNumber}">
+									  </div>
+									  
+									  <div class="form-group">
+									    <label for="postalCode" th:text="#{register.postalCode}">Street</label>
+									    <input th:value="${address.postalCode}" name="postalCode" type="text" class="form-control" id="postalCode" th:attr="placeholder=#{register.postalCode}">
+									  </div>
+									  
+									   <div class="form-group">
+									    <label for="city" th:text="#{register.city}">Street</label>
+									    <input th:value="${address.city}" name="city" type="text" class="form-control" id="city" th:attr="placeholder=#{register.city}">
+									  </div>
+									  
+							  	</div><!-- closes col-sm-6 -->
+
+		            		 	<input class="btn btn-success btn-block btn-lg" type="submit" th:attr="value=#{register.buttonText}"/>
+		            	  
+					  </form>
+				  
+				  <div class="text-center" style="margin:15px auto;">
+				  		<a th:href="@{/account}" th:text="#{register.orLogin}"></a>
+				  </div>
+				  
+				  
+				  </div><!-- closes row content -->
+			</div><!--closes container-fluid -->  
+		</div><!--closes container -->
+	</body>
+</html>

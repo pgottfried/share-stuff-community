@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="en">
+	<meta charset="UTF-8">
+    <title>Sharing Economy</title>
+    <!--/*/ <th:block th:include="fragments/header :: meta"></th:block> /*/-->
+</head>
+<body>
+
+	<!--/*/ <th:block th:replace="fragments/header :: ${#authorization.expression('hasRole(''ROLE_USER'')')} ? accountHeader : header"></th:block> /*/-->
+	
+	
+		<div class="container-fluid text-center">    
+	  		<div class="row content">
+				
+				<div class="col-sm-2 text-left nopadding">
+					<!--/*/ <th:block th:replace="fragments/other :: sidebar"></th:block> /*/-->	
+				</div>
+				
+			    <div id="offerGrid" class="col-sm-8 text-left"> 
+				    <div class="page-header">
+						<h4 th:text="#{nearHere.header}"></h4>
+					</div>
+			    	<div class="media" th:each="offer : ${offerList}" >
+			    	
+						  <div class="media-left">
+								<img id="preview"  th:src="@{'/offer/thumb/'+${offer.id}}" style="height:150px; width:150px;">
+						  </div>
+						  
+					  	  <div class="media-body">
+					    	<h4 class="media-heading" th:text="${offer.title}">Media heading</h4>
+					    	<p>
+						    	<i class="profil-entry">Kategorie: </i><i class="profil-entry" th:text="${offer.category}"></i>
+						    	<br/>				    	
+						    	<i class="profil-entry">Entfernung: </i><i class="profil-entry" th:text="'tbd'"></i>
+					    	</p>
+					    	<div>
+					    		<span style="margin-top:10px;" class="profil-entry">Nutzer Bewertung:</span>
+						    	<span class="stars24" th:text="${offer.rating}"></span>
+					    	</div>
+					     </div>
+					</div>	
+			    </div>
+			    
+			    
+			    <div id="ads" class="col-sm-2">
+			    	<div class="well">
+		        		<p>ADS</p>
+		      		</div>
+				    <div class="well">
+				        <p>ADS</p>
+				    </div>
+			    </div>
+			</div>
+		</div>
+	
+<div id="deleteOffer" class="modal fade" role="dialog">
+ 		<div class="modal-dialog">
+					<div class="modal-content">
+							<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal">&times;</button>
+									<h4 class="modal-title" th:text="#{myOffers.deleteOffers}"></h4>
+							</div>
+							<div class="modal-body">
+									<h4 th:text="#{myOffer.areUSure}"></h4>
+									<form id="deleteOfferForm">
+	   								 	<input  type="submit" class="btn btn-danger" th:text="#{myOffers.deleteYes}">
+	   								 	<button type="button" class="btn btn-success" data-dismiss="modal" th:text="#{myOffers.deleteNo}">&times;</button>
+    								</form>
+							</div>
+					</div>
+			</div>
+ </div>	
+ 
+ <script>
+ $('#deleteOfferForm').on('submit',function(event){
+		event.preventDefault();
+		$.ajax({
+         type:'POST',
+         url: '/profile/changeUserData',
+         contentType : 'application/json; charset=utf-8',
+     	data : JSON.stringify(formData),
+			success: function(data){
+				alert(data);
+				alert('success');
+				if(data == 'success')
+             	location.reload(true);
+         	else
+         		$("#message").addClass("alert alert-danger").append($("<span>").text("Something went wrong. Please try again."));
+			},
+			error: function(data){
+				$("#message").addClass("alert alert-danger").append($("<span>").text("Error occured, Please try again."));
+			}
+			
+		});
+	});
+ </script>
+ <script>
+			$(function() {
+			    $('span.stars24').stars24();
+			});
+</script>
+<script type="text/javascript">
+			$.fn.stars16 = function() {
+			    return $(this).each(function() {
+			        $(this).html($('<span />').width(Math.max(0, (Math.min(5, parseFloat($(this).html())))) * 16));
+			    });
+			}
+			$.fn.stars24 = function() {
+			    return $(this).each(function() {
+			        $(this).html($('<span />').width(Math.max(0, (Math.min(5, parseFloat($(this).html())))) * 24));
+			    });
+			}
+</script>       
+		
+</body>
+</html>

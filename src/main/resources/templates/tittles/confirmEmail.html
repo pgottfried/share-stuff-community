@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="de">
+
+    <title th:text=#{register.title}></title>
+    <!--/*/ <th:block th:include="fragments/header :: meta"></th:block> /*/-->
+    
+</head>
+	<body>
+		<!--/*/ <th:block th:replace="fragments/header :: header"></th:block> /*/-->
+		
+		<div class="container">
+			<div class="jumbotron">
+				<div class="alert alert-danger" th:if="${param.error}" role="alert">
+	            	<h3 th:text="#{confirmEmail.failed}">Invalid username and password.</h3>
+	        	</div>
+				<div class="alert alert-success" th:unless="${param.error}">
+					<h1 th:text="#{confirmEmail.success}"></h1>
+					<p th:text="#{confirmEmail.loginPlz} +' '+ ${email}"></p>
+				</div>
+			</div>
+		</div>
+
+</body>
+</html>

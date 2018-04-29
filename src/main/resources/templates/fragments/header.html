@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="meta">
+
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link href="http://cdn.jsdelivr.net/webjars/bootstrap/3.3.6/css/bootstrap.min.css"
+          th:href="@{/webjars/bootstrap/3.3.6/css/bootstrap.min.css}"
+          rel="stylesheet" media="screen" />
+
+    <script src="http://cdn.jsdelivr.net/webjars/jquery/1.12.2/jquery.min.js"
+            th:src="@{/webjars/jquery/1.12.2/jquery.min.js}"></script>
+    
+    <script src="http://cdn.jsdelivr.net/webjars/bootstrap/3.3.6/js/bootstrap.min.js"
+            th:src="@{/webjars/bootstrap/3.3.6/js/bootstrap.min.js}"></script>
+   
+    <link href="resources/static/css/guru.css"
+          th:href="@{/css/guru.css}" rel="stylesheet" media="screen"/>
+    
+</head>
+
+<body>
+<div class="container" >
+
+
+<nav class="navbar navbar-default navbar-custom" th:fragment="header" style="margin-bottom:15px;">
+  <div class="container-fluid">
+  
+    	<!-- Brand and toggle get grouped for better mobile display -->
+	    <div class="navbar-header">
+	      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+	        <span class="sr-only">Toggle navigation</span>
+	        <span class="icon-bar"></span>
+	        <span class="icon-bar"></span>
+	        <span class="icon-bar"></span>
+	      </button>
+	      <a class="navbar-brand" href="#">
+	      	<i style="font-family:Arial; font-weight:bold; font-size:24px; color:white;">Give&Get</i>
+	      </a>
+	    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+	    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+		      
+		      <ul class="nav navbar-nav">
+			        <li class="dropdown">
+			          <a href="#" class="dropdown-toggle header-item color-white" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="headerItem" th:text="#{header.category}"></span><span class="caret headerItem"></span></a>
+			          <ul class="dropdown-menu">
+			            <li><a class="header-item" th:href="@{/category/books}" th:text="#{category.books}"></a></li>
+			            <li><a class="header-item" th:href="@{/category/electronics}" th:text="#{category.electronics}">Electronics</a></li>
+			            <li><a class="header-item" th:href="@{/category/home}" th:text="#{category.home}">Home</a></li>
+			            <li><a class="header-item" th:href="@{/category/industrial}" th:text="#{category.industrial}">Home</a></li>
+			            <li><a class="header-item" th:href="@{/category/others}" th:text="#{category.others}">Others</a></li>
+			          </ul>
+			        </li>
+			        <li><a class="header-item color-white" href="#" th:text="#{header.about}"></a></li>
+		      </ul>
+		      
+		      <ul class="nav navbar-nav navbar-right">
+			        <li><a class="header-item color-white" th:text="#{header.signIn}" th:href="@{/register}">Sign in</a></li>
+			        <li><a class="header-item color-white" th:text="#{header.login}" th:href="@{/account}">Login</a></li>
+		      </ul>
+		      
+		      <form th:action="@{/search/title}" class="navbar-form navbar-right" role="search" >
+			        <div class="form-group">
+			        	<input required name="term" type="text" class="form-control" th:attr="placeholder=#{header.search}">
+			        </div>
+			        <div class="form-group">
+			        	<input name="cityOrZip" size="8" type="text" class="form-control" th:attr="placeholder=#{header.searchCityOrZip}">
+			        </div>
+			        <button type="submit" class="btn btn-default">Submit</button>
+		      </form>
+		      
+	    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+
+	
+</div>
+
+<div class="container">
+		<nav class="navbar navbar-default navbar-custom" th:fragment="accountHeader" style="margin-bottom:15px;">
+  <div class="container-fluid">
+  
+    	<!-- Brand and toggle get grouped for better mobile display -->
+	    <div class="navbar-header">
+	      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+	        <span class="sr-only">Toggle navigation</span>
+	        <span class="icon-bar"></span>
+	        <span class="icon-bar"></span>
+	        <span class="icon-bar"></span>
+	      </button>
+	     <a class="navbar-brand" href="#">
+	      	<i style="font-family:arial; font-weight:bold; font-size:24px; color:white;">Give&Get</i>
+	      </a>
+	    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+	    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+		      
+		      <ul class="nav navbar-nav">
+			        <li class="dropdown">
+			          <a href="#" class="dropdown-toggle header-item color-white" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="headerItem" th:text="#{header.category}"></span><span class="caret headerItem"></span></a>
+			          <ul class="dropdown-menu">
+			            <li><a class="header-item" th:href="@{/category/books}" th:text="#{category.books}"></a></li>
+			            <li><a class="header-item" th:href="@{/category/electronics}" th:text="#{category.electronics}">Electronics</a></li>
+			            <li><a class="header-item" th:href="@{/category/home}" th:text="#{category.home}">Home</a></li>
+			            <li><a class="header-item" th:href="@{/category/industrial}" th:text="#{category.industrial}">Home</a></li>
+			            <li><a class="header-item" th:href="@{/category/others}" th:text="#{category.others}">Others</a></li>
+			          </ul>
+			        </li>
+			        <li><a class="header-item color-white" href="#" th:text="#{header.about}"></a></li>
+		      </ul>
+		      
+		     
+     		  <form th:action="@{/logout}" method="post">
+			      <ul class="nav navbar-nav navbar-right">
+				        <li class="dropdown">
+				          <a href="#" class="header-item dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="headerItem color-white" th:text="#{headerMenuButton.account}"></span><span class="caret headerItem color-white"></span></a>
+				          <ul class="dropdown-menu">
+				            <li><a class="header-item" th:href="@{/account/profil}" th:text="#{headerMenuItem.profil}"></a></li>
+				            <li><a class="header-item" th:href="@{/account/offers}" th:text="#{headerMenuItem.offers}"></a></li>
+				            <li><a class="header-item" th:href="@{/account/requested/offers}" th:text="#{headerMenuItem.requestedOffers}"></a></li>
+				            <li><a class="header-item" th:href="@{/account/requests}" th:text="#{headerMenuItem.requests}"></a></li>
+				            <li><input style="width:100%;" type="submit" name="logout" th:attr="value='Abmelden'"> </li>
+				          </ul>
+				        </li>
+				    </ul>
+		      	</form>	
+		      	
+
+		      
+		      <form th:action="@{/search/title}" class="navbar-form navbar-right" role="search" >
+			        <div class="form-group">
+			        	<input required name="term" type="text" class="form-control" th:attr="placeholder=#{header.search}">
+			        </div>
+			        <div class="form-group">
+			        	<input name="cityOrZip" size="8" type="text" class="form-control" th:attr="placeholder=#{header.searchCityOrZip}">
+			        </div>
+			        <button type="submit" class="btn btn-default">Submit</button>
+		      </form>
+		      
+	    </div><!-- /.navbar-collapse -->
+	   
+  </div><!-- /.container-fluid -->
+<!-- 	 <div style="height:35px; background-color:blue;"> -->
+<!-- 		 	<div style="float:right; margin-right:20px;"> -->
+<!-- 			 		<a href="#" class="btn btn-primary" type="button"> -->
+<!-- 		  				<span class="glyphicon glyphicon-comment"></span><span class="badge">4</span>  -->
+<!-- 					</a> -->
+<!-- 					<a th:href="@{/addOffer}" class="btn btn-primary" type="button"> -->
+<!-- 		  				<span class="glyphicon glyphicon-plus"></span> -->
+<!-- 					</a> -->
+<!-- 			</div> -->
+<!-- 	 </div>     -->
+</nav>
+</div>
+</body>
+</html>

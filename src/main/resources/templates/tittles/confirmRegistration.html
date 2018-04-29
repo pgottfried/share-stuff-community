@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="de">
+
+    <title th:text=#{register.title}></title>
+    <!--/*/ <th:block th:include="fragments/header :: meta"></th:block> /*/-->
+    
+</head>
+	<body>
+		<!--/*/ <th:block th:replace="fragments/header :: header"></th:block> /*/-->
+		
+		<div class="container">
+			<div class="jumbotron">
+				<h1 th:text="#{confirmReg.success}"></h1>
+				<p th:text="#{confirmReg.emailSendTo} +' '+ ${email}"></p>
+				<p th:text="#{confirmReg.emailValidate}"></p>
+			</div>
+		</div>
+
+</body>
+</html>

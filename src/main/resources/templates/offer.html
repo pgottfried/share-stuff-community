@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="en">
+	<meta charset="UTF-8">
+    <title>Sharing Economy</title>
+    <!--/*/ <th:block th:include="fragments/header :: meta"></th:block> /*/-->
+</head>
+<body>
+	<!--/*/ <th:block th:replace="fragments/header :: ${#authorization.expression('hasRole(''ROLE_USER'')')} ? accountHeader : header"></th:block> /*/-->
+	<div class="container-fluid text-center">    
+	  		<div class="row content">
+					<div class="col-sm-2 text-left nopadding">
+						<ul class="nav nav-pills nav-stacked">
+							<!--/*/ <th:block th:if="${#authorization.expression('hasRole(''ROLE_USER'')')}" th:include="fragments/other :: sidebar"></th:block> /*/-->	
+						</ul>
+						<p th:unless="${#authorization.expression('hasRole(''ROLE_USER'')')}">Sie müssen sich anmelden um den User kontaktieren zu können</p>
+					</div>
+					
+					<div class="col-sm-8">
+						<div class="row" >
+					    
+				    		 				    
+					    <div id="offerPart" class="col-sm-12">
+					    	<div class="row content">
+						    	
+						    	<div id="gallery" class="col-sm-6">
+						    	
+							    		<div id="bigPreview" class="preview" >
+							    			<img id="preview"  th:src="@{'/offer/images/'+${imageIds[0]}}" class="img-responsive center-block" style="height:250px;">
+							    		</div>
+							    		
+							    		<div th:if="${#lists.size(imageIds) > 1}" id="thumbPreview" class="myThumbnails" style="margin-top:5px;">
+							    			<img th:each="imageId : ${imageIds}" th:src="@{'/offer/images/' +${imageId}}" class="img-responsive" onclick="getElementById('preview').src=this.src" >
+							    		</div>
+							    		
+						    	</div>
+						    	
+						    	<div id="offerdetails" class="col-sm-6" style="text-align:left;">
+						    		<h3 th:text="${offer.title}"></h3> <br>
+						    		<h4 th:text="'Status: '+${offer.status}"></h4> <br>
+						    		<button th:if="${#authorization.expression('hasRole(''ROLE_USER'')')}" type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#messageWindow">Send a Message</button>
+						    		<button th:unless="${#authorization.expression('hasRole(''ROLE_USER'')')}" type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#registerWindow">Send a Message</button>
+						    	</div>
+	
+					    	</div>
+						    	<div th:if="${offer.description}" class="text-left">
+						    		<br/>
+							    	<h4>Description: </h4>
+								    <p th:text="${offer.description}"></p>
+							    </div>
+							    <div th:if="${#authorization.expression('hasRole(''ROLE_USER'')')}" id="userPart" style="text-align: center;">
+							    	<br/>
+							    	<h4 class="text-left">About User: </h4> 
+					    			<div class="well">
+					    				<div class="row">
+					    					<div class="col-sm-6">
+									    	 <a th:href="@{'/user/'+${offer.user.id}}">
+										    	 <img th:src="@{'/user/img/' + ${offer.user.id}}" class="img-circle img-responsive center-block" style="max-height:220px">
+									    	 </a>
+						    	 			</div>
+						    	 			<div class="col-sm-6 text-left">
+						    	 				 <h3 th:text="${offer.user.userName}" class="text-font-18 text-font-bold"></h3>
+										    	 <span class="stars24 " th:text="${offer.user.rating}"></span>
+										    	 <a th:href="@{'/user/'+${offer.user.id}+'/rating'}"><span th:text="'('+${offer.user.ratingCount}+')'"></span></a>
+						    	 			</div>
+					    	 			</div>
+					     			</div> 
+							    
+							    
+					    </div>
+					   
+				    </div>
+				    </div>
+				    </div>
+				    <div id="adsPart" class="col-sm-2">
+				    	<div class="well">
+			        		<p>ADS</p>
+			      		</div>
+					    <div class="well">
+					        <p>ADS</p>
+					    </div>
+				    </div>
+				    
+				
+		</div>
+	</div>
+	
+	<div id="messageWindow" class="modal fade" role="dialog">
+			<div class="modal-dialog">
+					<!-- Modal content-->
+					<div class="modal-content">
+							<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal">&times;</button>
+									<h4 class="modal-title" th:text="#{offer.msgTo} + ' ' + ${offer.user.userName}"></h4>
+							</div>
+							<div class="modal-body">
+									
+										<div class="form-group">
+												<textarea class="form-control" rows="3" style="resize:none;"></textarea> 
+			    								<button onclick="sendRequest()" class="btn btn-success btn-lg pull-right">Send</button>
+	    								</div>
+    								
+							</div>
+					</div>
+			</div>
+	</div>
+	<div id="registerWindow" class="modal fade" role="dialog">
+			<div class="modal-dialog">
+					<!-- Modal content-->
+					<div class="modal-content">
+							<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal">&times;</button>
+									<h4 class="modal-title" th:text="'Bitte anmelden bzw. registrieren'"></h4>
+							</div>
+							<div class="modal-body">
+									<p>Sie müssen sich registrieren/anmelden um Kontakt zum Benutzer aufnehmen zu können</p>
+									<a href="/login" class="btn btn-success">Anmelden</a>
+    								<a href="/register" class="btn btn-success">Registrieren</a>
+							</div>
+					</div>
+			</div>
+	</div>
+	
+	
+	
+</body>
+<style type="text/css">
+	.myThumbnails img {
+		height: 50px;
+		width: 19%;
+ 		border: 1px solid #555; 
+  		padding: 0px; 
+		margin: 0;  
+		display: inline-block;
+	}
+
+	.myThumbnails img:hover {
+		border: 1px solid #00ccff;
+		cursor:pointer;
+	}
+
+	.preview img {
+ 		border: 1px solid #444;
+ 		
+	}
+</style>
+
+	<script type="text/javascript" th:inline="javascript">
+	function sendRequest(){
+        var text = $('#messageWindow textarea').val();
+       	$.ajax({url: "/request",
+       			type: "POST",
+       			data: {msg : text, toUser : [[${offer.user.id}]], offerId : [[${offer.id}]] },
+       			success: function(result){alert(result);}
+       	});
+       	$('#messageWindow textarea').val("");
+       	$('#messageWindow').modal('hide');  
+	}
+
+	</script> 
+
+	<script>
+			$(function() {
+			    $('span.stars16').stars16();
+			    $('span.stars24').stars24();
+			});
+	</script>
+	<script type="text/javascript">
+			$.fn.stars16 = function() {
+			    return $(this).each(function() {
+			        $(this).html($('<span />').width(Math.max(0, (Math.min(5, parseFloat($(this).html())))) * 16));
+			    });
+			}
+			
+			$.fn.stars24 = function() {
+			    return $(this).each(function() {
+			        $(this).html($('<span />').width(Math.max(0, (Math.min(5, parseFloat($(this).html())))) * 24));
+			    });
+			}
+	</script>
+</html>

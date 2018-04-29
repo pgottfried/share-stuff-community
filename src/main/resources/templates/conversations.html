@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="en">
+  <meta charset="UTF-8">
+    <title>Sharing Economy</title>
+    <script th:src="@{/js/sockjs-0.3.4.js}"></script>
+    <script src="js/stomp.min.js"></script>
+<!-- 	<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js" ></script> -->
+    <!--/*/ <th:block th:include="fragments/header :: meta"></th:block> /*/-->
+	<script th:src="@{/js/custom.js}"></script>
+</head>
+<body>
+	<!--/*/ <th:block th:replace="fragments/header :: ${#authorization.expression('hasRole(''ROLE_USER'')')} ? accountHeader : header"></th:block> /*/-->
+	<div class="container-fluid ">    
+	  		<div class="row">
+		  			<div id="conversationBox" class="col-sm-10">
+
+		  					<div class="row">
+		  						<div class="col-sm-4 nopadding">
+		  							<div id="contacts" class="contacts" >
+<!-- 						  					<div th:each="conv : ${convList}" th:id="${conv.id}" class="media"> -->
+<!-- 								  					 <div class="media-left"> -->
+													    
+<!-- 														 	<a th:href="@{'/offer/'+${conv.offer.id}}"> -->
+<!-- 														      <img class="media-object" th:src="@{'/offer/thumb/'+${conv.offer.id}}" style="height:48px;width:48px;"> -->
+<!-- 														    </a> -->
+														    
+														    
+<!-- 													 </div> -->
+<!-- 													 <div class="media-body convContact"> -->
+<!-- 													 		<a th:href="@{'/conversation/' + ${conv.id}}"> -->
+<!-- 													 			<span class="media-heading" th:text="${conv.title}"></span> -->
+<!-- 													 		</a> -->
+<!-- 														 	<div  style="cursor:pointer; width:100%;height:100%;"> -->
+<!-- 																<span>some text</span> -->
+<!-- 														 	</div> -->
+														 	
+													    
+<!-- 													 </div> -->
+<!-- 													 <div class="media-right"> -->
+<!-- 														 	 <a th:href="@{'/conversation/' + ${conv.id}}"> -->
+<!-- 														 		<span class="badge" style="font-size:14px;"></span> -->
+<!-- 														 	</a> -->
+													    
+<!-- 													 </div> -->
+													
+											</div><!-- closes div #contacts -->
+										</div><!-- closes div .col-sm4 -->
+									
+										
+										<div id="first" class="col-sm-8 nopadding" style="background-color:blue;">
+											
+							
+												<div id="box" class="box">
+													<ol class="conversation">
+<!-- 														<li th:each="message : ${messageList}" th:class="(${message.user.id} == ${userId})? 'self' :'other'"> -->
+															  
+<!-- 															  <div th:if="${message.user.id} == ${userId}" class="message">  -->
+<!-- 					 								        		<p th:text="${message.msg}">Talkie talk talk.</p>  -->
+<!-- 													        		<span class="username" th:text="${userNames['__${message.user.id}__']+' '}"></span><span class="time" th:text="${message.created}"></span> 						 -->
+<!-- 												      		  </div> -->
+<!-- 															  <div th:if="${message.user.id} == ${userId}" class="avatar"> -->
+<!-- 					 							      		 		<img  th:src="@{'/user/img/' + ${message.user.id}}" /> -->
+<!-- 					 							      		  </div> -->
+												      		  
+												      		  
+<!-- 												      		   <div th:if="${message.user.id} != ${userId}" class="avatar"> -->
+<!-- 					 							      		 		<img th:src="@{'/user/img/' + ${message.user.id}}" /> -->
+<!-- 					 							      		  </div> -->
+<!-- 												      		  <div th:if="${message.user.id} != ${userId}" class="message">  -->
+<!-- 					 								        		<p th:text="${message.msg}">Talkie talk talk.</p>  -->
+<!-- 													        		<span class="username" th:text="${userNames['__${message.user.id}__']+' '}"></span><span class="time" th:text="${message.created}"></span> -->
+<!-- 												      		  </div> -->
+					  
+<!-- 														</li> -->
+													</ol>
+												</div><!-- closes div #box -->
+												<form>
+													<input class="form-control col-xs-12" autocomplete="off" placeholder="Tippe hier..."></input>
+												</form>
+												
+	
+										</div><!-- closes div #first -->
+										<div id="second">
+											<h2>Logs</h2>
+											<div></div>
+										</div>
+		  			</div><!-- closes div .row -->
+		  		</div> <!-- closes div #coversationbox -->
+		  		
+		  		<div id="addsPart" class="col-sm-2">
+					  	<div class="well">
+							   <p>ADS</p>
+						</div>
+					  	<div class="well">
+							   <p>ADS</p>
+						</div>    
+		  		</div>
+	  		</div>
+	 </div>
+
+	 
+<!-- <!-- 	  <script> --> 
+<!-- // 	 	$(function() { -->
+<!-- // 	 		$('#contacts div.media:first').addClass('selected'); -->
+<!-- // 	 		var elem = document.getElementById("box"); -->
+<!-- //       	  	elem.scrollTop = elem.scrollHeight; -->
+<!-- //       	  	$('span.time').timeformat(); -->
+<!-- // 		}); -->
+
+<!-- <!-- 	 </script> --> 
+	 
+	 
+<script charset="UTF-8" th:inline="javascript">
+      var ws = new SockJS('http://' + window.location.hostname + ':15674/stomp');
+      var client = Stomp.over(ws);
+      var clientExchange = [[${userExchange}]];
+      var userId = [[${userId}]];
+	  var userName = [[${userName}]];
+      var convList = [[${convList}]];
+      var convMessageMap = [[${convMessageMap}]];
+      var convNode = $("#box ol");
+      var contactNode = $('#contacts');
+      var activeContactNode;
+      var convId;
+      
+      function scrollDown(){
+    	  var elem = document.getElementById("box");
+	      elem.scrollTop = elem.scrollHeight;
+      }
+      function timestampNow(){
+    	  var timestamp = new Date();
+    	  var hh = timestamp.getHours();
+    	  var mm = timestamp.getMinutes();
+    	  if(hh<10){hh='0'+hh} 
+    	  if(mm<10){mm='0'+mm} 
+    	  var timestamp = hh+':'+mm;
+    	  return timestamp;
+      }
+      function timestampNice(timestamp){
+    	 var tsUgly = new Date(timestamp);
+    	 var today = new Date();
+    	 var dd = tsUgly.getDate();
+		 var mm = tsUgly.getMonth()+1;
+	     var yyyy =tsUgly.getFullYear(); 
+	     var HH = tsUgly.getHours();
+	     var MM = tsUgly.getMinutes();
+	     if(dd<10){dd='0'+dd}
+	     if(mm<10){mm='0'+mm}
+	     if(HH<10){HH='0'+HH} 
+	     if(MM<10){MM='0'+MM}
+	     if(dd == today.getDate() && mm == (today.getMonth()+1) && yyyy == today.getFullYear()){
+       		 return (HH+':'+MM);	
+       	 }
+	     else if( ((today.getDate() - dd) == 1) && mm == (today.getMonth()+1) && yyyy == today.getFullYear()){
+	    	 return "Gestern";
+	     }
+	     else{
+	    	 return (dd+'.'+mm+'.'+yyyy);
+	     } 
+      }
+      
+      function contactClicked(){
+        	var clickedContactNode = $(this).parent();	
+    	    if(clickedContactNode.attr('id') != activeContactNode.attr('id') ){
+    	 	    activeContactNode.removeClass("selected");
+    	 	    clickedContactNode.addClass("selected");
+    	 	    clickedContactNode.find("div.media-right span").text("");
+    	 	    convId = clickedContactNode.attr("id");
+    	 	    convNode.empty();
+    	 	    appendMessages(convId);
+    	 	    scrollDown();
+    	 	    activeContactNode = clickedContactNode;
+    	    }  
+      }
+      function convertMsg(message){
+    	  var msgObj = {msg: message.msg, created : message.created,
+    			  user: {id: message.userId, userName: message.userName}};
+    	  return msgObj;
+      }
+      
+      function saveMsg(message,routeId){
+    	  var msgObj = {msg : message.body, created : new Date(), 
+    			  user: {id:message.headers.userId, userName:message.headers.userName}};
+    	  convMessageMap[routeId].unshift(msgObj);
+      }
+      
+      function newContact(entry){
+    	  contactNode.prepend(
+				  $("<div id='"+entry.id+"' class='media contact'>").append(
+				  		$("<div class='media-left'>")
+				  		.append(
+						  	$("<a href='/offer/" +entry.offerId+"' >").append(
+								  $("<img>",{ src: "/offer/thumb/"+entry.offerId, style: "height:48px;width:48px;"}))  
+				  		))
+				  		
+				 .append($("<div class='media-body convContact'>").append(
+								
+								$("<span class='contactHeader'>").text(entry.title))
+						.append($("<div>").append(
+									$("<span class='msgPreview'>").text(convMessageMap[entry.id][0].msg))))
+						.append($("<div class='media-right badge-center-v'>").append(
+									$("<span class='badge'>").text(1)))					
+		  );
+    	  contactNode.find(".convContact").first().click(contactClicked);
+      }
+
+      
+      // SockJS does not support heart-beat: disable heart-beats
+      client.heartbeat.incoming = 0;
+      client.heartbeat.outgoing = 0;
+
+      client.debug = function(e) {
+          $('#second div').append($("<p>").text(e));
+      };
+      
+      var on_connect = function(x) {
+          client.subscribe('/exchange/'+clientExchange,function(message){
+  			  
+        	  
+        	  var destination = message.headers.destination;
+        	  var routeId = destination.substring(destination.lastIndexOf("/") + 1, destination.length);
+        	
+        	  // does conv exists ??
+        	  if(convId == routeId){
+        		  	  saveMsg(message,routeId);
+		        	  if(message.headers.userId == userId){
+			        	  convNode.append(
+			        			  $("<li class='self'>").append(
+			        			  		$("<div class='message'>").append(
+			        			  				$("<p style='text-align:left;'>").text(message.body)).append($("<span class='username'>").text(message.headers.userName+' ')).append($("<span class='time'>").text(timestampNow())))
+			        	  			.append(
+			        			  		$("<div class='avatar'>").append($("<img>",{src: "/user/img/"+userId}))
+			        	  		  	)
+			        	  );
+			        	  }
+		        	  		else{
+			        		  convNode.append( $("<li class='other'>").append(
+			        				  $("<div class='avatar'>").append($("<img>",{src: "/user/img/"+message.headers.userId}))
+			  	        	  )
+			  	        	  .append(
+			  	        			
+			  	        			 $("<div class='message'>").append($("<p>").text(message.body)).append($("<span class='username'>").text(message.headers.userName+' ')).append($("<span class='time'>").text(timestampNow()))
+			  	        			
+			  	        	  )
+			  	        	  );
+			  
+			        	  }
+		        	  	  activeContactNode.find("div.media-body div span").text(message.body);
+			        	  scrollDown();
+        	  }
+        	  else{
+        		  	var otherConv = $('#'+routeId);
+        		  	if (otherConv.length){
+        		  	  	 saveMsg(message,routeId);
+	        		  	 if(otherConv.not(':first-child')){
+		        			otherConv.prependTo(contactNode);
+		        		 }
+		        		 var badge =otherConv.find('div.media-right span');
+		        		 if(badge.text()){
+		        		  	var count = parseInt(badge.text());	
+		        		  	badge.text(count+1);
+		        		 }
+		        		 else{
+		        			 badge.text(1);
+		        		 }
+		        		 otherConv.find('div.media-body div span').text(message.body);
+        		  	}
+        		  	else{
+        		  		$.ajax({
+       		 	           url: "/conversation/"+routeId,
+       		 	           method: "GET",
+       		 	           dataType: "json",
+       		 	           success: function(data){
+        		  		   		if(data){
+        		  		   			convList.unshift(data.conversation);
+        		  		   			var newMessageList = [];
+        		  		   			data.messageList.forEach(function(entry){
+        		  		   				var newMessage = convertMsg(entry);
+        		  		   				newMessageList.push(newMessage);
+        		  		   			}); 
+        		  		   		    convMessageMap[routeId] = newMessageList;
+        		  		   			newContact(data.conversation);
+        		  		   		}
+        		  		   		
+        		  		   }
+        		  			
+        		  		});
+        		  		
+        		  		//its a new Conversation!!!
+        		  	}  
+        	  }
+        	  
+          });
+        				
+      };
+      
+      var on_error =  function() {
+        console.log('error');
+      };
+      
+      client.connect('guest', 'guest', on_connect, on_error, '/');
+ 
+      
+      
+      (function createConvList(){
+    	  convList.forEach(function(entry) {
+    		
+    		  contactNode.append(
+    				  $("<div id='"+entry.id+"' class='media contact'>").append(
+    				  		$("<div class='media-left'>")
+    				  		.append(
+    						  	$("<a href='/offer/" +entry.offer.id+"' >").append(
+    								  $("<img>",{ src: "/offer/thumb/"+entry.offer.id, style: "height:48px;width:48px;"}))  
+    				  		))
+    				  		
+    				 .append($("<div class='media-body convContact'>").append(
+    								
+    								$("<span class='contactHeader'>").text(entry.title))
+    						.append($("<div>").append(
+    									$("<span class='msgPreview'>").text(convMessageMap[entry.id][0].msg))))
+    						.append($("<div class='media-right badge-center-v'>").append(
+    									$("<span class='badge '>")))					
+    		  );				 
+    	  });
+    	  activeContactNode = contactNode.find(".media").first();
+    	  activeContactNode.addClass("selected");
+    	  convId = convList[0].id;
+      })();
+      
+
+      function appendMessages(convId){
+    	  var messageList = convMessageMap[convId];
+    	  messageList.forEach(function(entry) {
+    		 if(entry.user.id == userId){
+    			 convNode.prepend( $("<li class='self'>").append(
+	        			  $("<div class='message'>").append($("<p style='text-align:left;'>").text(entry.msg)).append($("<span class='username'>").text(entry.user.userName+' ')).append($("<span class='time'>").text(timestampNice(entry.created)))
+	        	  )
+	        	  .append(
+	        			  $("<div class='avatar'>").append($("<img>",{src: "/user/img/"+entry.user.id}))	
+	        	  )
+	        	  );
+    		 }
+    		 else{
+    			 convNode.prepend( $("<li class='other'>").append(
+       				  $("<div class='avatar'>").append($("<img>",{src: "/user/img/"+entry.user.id}))
+ 	        	  )
+ 	        	  .append(
+ 	        			 $("<div class='message'>").append($("<p>").text(entry.msg)).append($("<span class='username'>").text(entry.user.userName+' ')).append($("<span class='time'>").text(timestampNice(entry.created)))
+ 	        	  )
+ 	        	  );
+    		 }
+    	  });
+      }
+      appendMessages(convList[0].id);
+      
+      $('#first form').submit(function() {
+          var text = $('#first form input').val();
+          if (text) {
+          	client.send('/exchange/exchange_outgoing/'+convId, {'userId' : userId, 'userName' : userName  ,'content-type': 'text/plain','content-encoding':'UTF-8'}, text);
+              $('#first form input').val("");
+          }
+            return false;
+        });
+      
+      $(".convContact").click(contactClicked);
+      
+//   	  $(".convContact").click(function(){
+//  	    var clickedConvId = $(this).parent().parent().attr("id");
+//  	    var selectedConvId = $('.selected').attr("id");
+//  	    if(clickedConvId != selectedConvId ){
+// 	 	    $('.selected').removeClass("selected");
+// 	 	    $(this).parent().parent().addClass("selected");
+// 	 	   	$.ajax({
+// 	           url: "/conversation/"+clickedConvId,
+// 	           method: "GET",
+// 	           dataType: "json",
+// 	           success: function(data) {
+// 	        	   var chatList =  $('#first ol');
+// 	        	   chatList.empty();
+// 	        	   data.forEach(function(entry) {
+// // 	        	   alert("type msg id: "+ typeof entry.userId+" type user id "+typeof userId);
+	        	
+// 	        		   if(entry.userId == userId){
+	        			  
+// 		        		   chatList.prepend( $("<li class='self'>").append(
+// 				        			  $("<div class='message'>").append($("<p style='text-align:left;'>").text(entry.msg)).append($("<span class='username'>").text(entry.userName+' ')).append($("<span class='time'>").text(entry.created))
+// 				        	  )
+// 				        	  .append(
+// 				        			  $("<div class='avatar'>").append($("<img>",{src: "/user/img/"+entry.userId}))
+				        			
+// 				        	  )
+// 				        	  );
+// 	        	   	   }
+// 	        		   else{
+							
+// 		        	   		chatList.prepend( $("<li class='other'>").append(
+// 			        				  $("<div class='avatar'>").append($("<img>",{src: "/user/img/"+entry.userId}))
+// 			  	        	  )
+// 			  	        	  .append(
+			  	        			
+// 			  	        			 $("<div class='message'>").append($("<p>").text(entry.msg)).append($("<span class='username'>").text(entry.userName+' ')).append($("<span class='time'>").text(entry.created))
+			  	        			
+// 			  	        	  )
+// 			  	        	  );
+// 	        	   	   }
+	        		   
+// 	        	   	   });
+	        	  
+// 	           	   }
+// 	       		});
+	 	   
+//  	    }
+ 	    
+//  	  });
+      
+</script>
+
+<script>
+
+</script>
+	 
+</body>
+
+</html>

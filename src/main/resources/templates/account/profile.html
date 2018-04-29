@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="en" >
+	<meta charset="UTF-8">
+    <title>TauschFreunde</title>
+   	<!--/*/ <th:block th:include="fragments/header :: meta"></th:block> /*/-->
+</head>
+<body>
+
+	<!--/*/ <th:block th:replace="fragments/header :: accountHeader"></th:block> /*/-->
+	
+	
+	
+		<div class="container-fluid text-center">    
+	  		<div class="row" >
+	  		
+					<div class="col-sm-2 text-left nopadding">
+						<!--/*/ <th:block th:replace="fragments/other :: sidebar"></th:block> /*/-->	
+					</div>
+					
+					<div class="col-sm-8" style="margin-top:20px;">
+						<div class="row">
+						    <div id="message"></div>
+						    <div class="col-sm-4"> 
+		      						<img th:src="@{'/user/img/' + ${user.id}}" class="img-responsive img-circle center-block" style="height:150px;margin-bottom:10px;"> 
+									<form id="form" >
+									 <span class="btn btn-success fileinput-button">
+								          <i class="glyphicon glyphicon-picture"></i>
+								          <span th:text="#{profile.changePic}">Change Pic...</span>
+								          <input id="input" type="file" name="file" required>
+								     </span>
+								</form>
+							</div>
+							
+							<div class="col-sm-8 text-left"> 
+								<h4 class="page-header" th:text="${user.userName}" style="padding-top:0px; margin-top:0px;"></h4>
+								<p>
+									<i class="glyphicon glyphicon-user profil-entry"></i><i class="profil-entry" th:text="' '+${user.firstName} + ' ' + ${user.lastName}+' '"></i>
+		                            <a href="#editName" role="button" data-toggle="modal"><i class="glyphicon glyphicon-edit profil-entry"></i></a>
+		                            <br /> 
+		                            <i class="glyphicon glyphicon-envelope profil-entry"></i><i class="profil-entry" th:text="' '+${user.email}"></i>
+		                            <br />
+		                            <i class="glyphicon glyphicon-home"></i><i class="profil-entry" th:text="' '+${address.street}+', '+${address.houseNumber}+', '+${address.city}+', '+${address.postalCode}+' '"></i>
+									<a href="#editAddress" role="button" data-toggle="modal"><i class="glyphicon glyphicon-edit profil-entry"></i></a>
+								</p>     	
+							</div>
+							
+							<div class="col-xs-12 text-left" style="margin-top:20px;">
+								<i th:text="#{profile.privacy}"></i><br />
+								<i th:text="#{profile.addressNote}"></i>
+							</div>
+						</div>
+					</div><!--closes div col-sm-8-->
+					
+				    <div class="col-sm-2 sidenav">
+					      <div class="well">
+					        <p>ADS</p>
+					      </div>
+					      <div class="well">
+					        <p>ADS</p>
+					      </div>
+				    </div>
+		    
+ 			</div>
+ 		</div>
+ 		
+ 		<div id="editName" class="modal fade" role="dialog">
+ 			<div class="modal-dialog">
+					<div class="modal-content">
+							<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal">&times;</button>
+									<h4 class="modal-title" th:text="#{profile.editName}"></h4>
+							</div>
+							<div class="modal-body">
+								 	<form id="editNameForm" th:object="${user}">
+										<div class="form-group">
+												<label th:text="#{register.firstName}">First Name</label>
+					    						<input id="firstName" th:value="*{firstName}" type="text" class="form-control">
+	    								</div>
+	    								<div class="form-group">
+												<label th:text="#{register.lastName}">Last Name</label>
+					    						<input id="lastName" th:value="*{lastName}" type="text" class="form-control">
+	    								</div>
+	   								 	<input type="submit" class="btn btn-success">
+    								</form>
+							</div>
+					</div>
+			</div>
+ 		</div>
+ 		
+ 		<div id="editAddress" class="modal fade" role="dialog">
+ 		<div class="modal-dialog">
+					<div class="modal-content">
+							<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal">&times;</button>
+									<h4 class="modal-title" th:text="#{profile.editAddress}"></h4>
+							</div>
+							<div class="modal-body">
+									<form id="editAddressForm" th:object="${address}">
+										<div class="form-group">
+												<label for="street" th:text="#{register.street}">Street</label>
+					    						<input id="street" th:value="*{street}" type="text" class="form-control">
+	    								</div>
+	    								<div class="form-group">
+												<label for="houseNumber" th:text="#{register.houseNumber}">Number</label>
+					    						<input id="houseNumber" th:value="*{houseNumber}" type="text" class="form-control">
+	    								</div>
+	    								<div class="form-group">
+												<label for="city" th:text="#{register.city}">City</label>
+					    						<input id="city" th:value="*{city}" type="text" class="form-control">
+	    								</div>
+	    								<div class="form-group">
+												<label for="postalCode" th:text="#{register.postalCode}">ZIP</label>
+					    						<input id="postalCode" th:value="*{postalCode}" type="text" class="form-control">
+	    								</div>
+	   								 	<input type="submit" class="btn btn-success">
+    								</form>
+							</div>
+					</div>
+			</div>
+ 		</div>
+ 		
+	
+
+<script>
+	$('#form').on('submit',function(event){
+		event.preventDefault();
+        var formData = new FormData(this);
+		$.ajax({
+            type:'POST',
+            url: '/profile/changeUserImage',
+            data:formData,
+            cache:false,
+            contentType: false,
+            processData: false,
+            success:function(data){
+            	if(data == 'success')
+                	location.reload(true);
+            	else{
+            		$("#message").addClass("alert alert-danger").append($("<span>").text("Something went wrong. Please try again."));
+            	} 
+            		
+            },
+            error: function(data){
+            	$("#message").addClass("alert alert-danger").append($("<span>").text("Something went wrong. Please try again."));
+               
+            }
+        });
+	});
+
+	$('#input').on('change',(function() {
+	  $('#form').submit();
+	}));
+	
+	function getUserData(){
+		var user = { firstName : $("#editNameForm #firstName").val(),
+					 lastName : $("#editNameForm #lastName").val()}
+		return user;
+	}
+	
+	$('#editNameForm').on('submit',function(event){
+		event.preventDefault();
+		var formData = getUserData();
+		$.ajax({
+            type:'POST',
+            url: '/profile/changeUserData',
+            contentType : 'application/json; charset=utf-8',
+        	data : JSON.stringify(formData),
+			success: function(data){
+				alert(data);
+				alert('success');
+				if(data == 'success')
+                	location.reload(true);
+            	else
+            		$("#message").addClass("alert alert-danger").append($("<span>").text("Something went wrong. Please try again."));
+			},
+			error: function(data){
+				$("#message").addClass("alert alert-danger").append($("<span>").text("Error occured, Please try again."));
+			}
+			
+		});
+	});
+	
+	function getAddressData(){
+		var address = { street : $("#editAddressForm #street").val(),
+					 	houseNumber : $("#editAddressForm #houseNumber").val(),
+					 	city : $("#editAddressForm #city").val(),
+					 	postalCode : $("#editAddressForm #postalCode").val()}
+		return address;
+	}
+	
+	$('#editAddressForm').on('submit',function(event){
+		event.preventDefault();
+		var formData = getAddressData();
+		alert(formData.street);
+		$.ajax({
+            type:'POST',
+            url: '/profile/changeAddress',
+            contentType : 'application/json; charset=utf-8',
+        	data : JSON.stringify(formData),
+			success: function(data){
+				if(data == 'success')
+                	location.reload(true);
+            	else
+            		$("#message").addClass("alert alert-danger").append($("<span>").text(data));
+			},
+			error: function(data){
+				$("#message").addClass("alert alert-danger").append($("<span>").text("Error occured. Please try again"));
+			}
+			
+		});
+	});
+</script>
+
+	
+</body>
+</html>
